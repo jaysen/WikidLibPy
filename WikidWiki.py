@@ -1,7 +1,3 @@
-import os,glob
-import mmap
-
-from WikidWorker import hasWiki
 
 class WikidWiki(object):
     """class for working with a wikidpad wiki from the filesystem."""
@@ -86,3 +82,9 @@ class WikidWiki(object):
         ps1 = set(pn1)
         ps2 = set(pn2)
         return ps1 - ps2
+
+    def getSetSymmetricDifferenceOfPageNameLists(self,pn1,pn2):
+        """Returns the symmetric difference (those in one or the other, but not both) of pageName lists pn1 and pn2"""
+        ps1 = set(pn1)
+        ps2 = set(pn2)
+        return ps1 ^ ps2
