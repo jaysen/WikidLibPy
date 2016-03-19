@@ -1,6 +1,11 @@
+import os,glob
+import mmap
+
+from WikidWorker import hasWiki
+
 class WikidWiki(object):
     """class for working with a wikidpad wiki from the filesystem."""
-    
+
     def __init__(self,folder_path):
         """Construct a WikidWiki class using the folder_path as string."""
         # raise error if folder path doesn't exist or contains no wiki:
@@ -63,3 +68,21 @@ class WikidWiki(object):
     def getPageNamesContainingSearchStringLowMem(self,srchstr):
         """Returns list of pageNames that contain the srchstr in their content"""
         return [x for x in self.pageNames if self.doesPageContainStringLowMem(x,srchstr)] 
+    
+    def getSetUnionOfPageNameLists(self,pn1,pn2):
+        """Returns the union of pageName lists pn1 and pn2"""
+        ps1 = set(pn1)
+        ps2 = set(pn2)
+        return ps1 | ps2
+    
+    def getSetIntersectionOfPageNameLists(self,pn1,pn2):
+        """Returns the intersection of pageName lists pn1 and pn2"""
+        ps1 = set(pn1)
+        ps2 = set(pn2)
+        return ps1 & ps2
+
+    def getSetDifferenceOfPageNameLists(self,pn1,pn2):
+        """Returns the difference of pageName lists pn1 and pn2"""
+        ps1 = set(pn1)
+        ps2 = set(pn2)
+        return ps1 - ps2
