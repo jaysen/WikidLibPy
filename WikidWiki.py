@@ -1,3 +1,7 @@
+import os,glob
+import mmap
+
+from WikidWorker import hasWiki
 
 class WikidWiki(object):
     """class for working with a wikidpad wiki from the filesystem."""
@@ -17,7 +21,7 @@ class WikidWiki(object):
         
     def readFileSystem(self):
         """Populates the PageName attributes of WikidWiki class from the filesystem"""
-        self.pageNames = self.getAllPageNames()
+        self.pageNames = self.getAllPages()
         self.pageNamesSet = set(self.pageNames)
         self.pageCount = len(self.pageNames)
     
@@ -29,16 +33,16 @@ class WikidWiki(object):
         filename = os.path.join(self.datafolder,"%s.wiki" % pageName)
         return filename    
     
-    def getAllPageNames(self):
-        """Returns a list of PageNames found in data folder."""
+    def getAllPages(self):
+        """Returns a list of Pages found in data folder."""
         filePathList = glob.glob(self.datafolder +'/*.wiki')
         return [self.__extractWikiFileNamesFromPath(x) for x in filePathList]
     
-    def getMatchingPageNamesByFunction(self,matchFunction,matchValue=""):
+    def getPagesByFunction(self,matchFunction,matchValue=""):
         """ Passed a match function and a match value to filter pages
             Returns list of pageNames that return true when processed by function matchFunction(matchValue,pagename)
         """
-        self.pageNames = self.getAllPageNames()
+        self.pageNames = self.getAllPages()
         if matchValue:
             return [x for x in self.pageNames if matchFunction(matchValue,x)]
         else:
@@ -57,34 +61,65 @@ class WikidWiki(object):
         filepath = self.__getFilePathFromPageName(pageName)
         return srchstr in open(filepath).read()
 
-    def getPageNamesContainingSearchString(self,srchstr):
+    def getPagesBySearchStr(self,srchstr):
         """Returns list of pageNames that contain the srchstr in their content"""
         return [x for x in self.pageNames if self.doesPageContainString(x,srchstr)]  
     
-    def getPageNamesContainingSearchStringLowMem(self,srchstr):
+    def getPagesBySearchStrLowMem(self,srchstr):
         """Returns list of pageNames that contain the srchstr in their content"""
         return [x for x in self.pageNames if self.doesPageContainStringLowMem(x,srchstr)] 
     
-    def getSetUnionOfPageNameLists(self,pn1,pn2):
+    def getPagesSetUnion(self,pn1,pn2):
         """Returns the union of pageName lists pn1 and pn2"""
         ps1 = set(pn1)
         ps2 = set(pn2)
         return ps1 | ps2
     
-    def getSetIntersectionOfPageNameLists(self,pn1,pn2):
+    def getPagesSetIntersection(self,pn1,pn2):
         """Returns the intersection of pageName lists pn1 and pn2"""
         ps1 = set(pn1)
         ps2 = set(pn2)
         return ps1 & ps2
 
-    def getSetDifferenceOfPageNameLists(self,pn1,pn2):
+    def getPagesSetDifference(self,pn1,pn2):
         """Returns the difference of pageName lists pn1 and pn2"""
         ps1 = set(pn1)
         ps2 = set(pn2)
         return ps1 - ps2
 
-    def getSetSymmetricDifferenceOfPageNameLists(self,pn1,pn2):
+    def getPagesSetSymmetricDifference(self,pn1,pn2):
         """Returns the symmetric difference (those in one or the other, but not both) of pageName lists pn1 and pn2"""
         ps1 = set(pn1)
         ps2 = set(pn2)
         return ps1 ^ ps2
+    
+    def getPagesByTag(self, tag):
+        """Passed a single tag and returns all pages containing that tag."""
+        return self.getPagesBySearchStr("[tag:%s]" % tag)
+
+    def getPagesByTags(self, tags):
+        """Passed a list of tags and returns all pages containing ALL those tags."""
+        pages = self.pageNames
+        for t in tags:
+            pages = self.getPagesSetIntersection(pages,self.getPagesByTag(t))
+        return pages
+
+    def getPagesWithNoTag(self):
+        """Gets all pages containing NO tag."""
+        return self.getPagesSetDifference(self.pageNames,self.getPagesBySearchStr("[tag"))
+
+    def getPagesByCategory(self, cat):
+        """Passed a single category and returns all pages containing that category link."""
+        return self.getPagesBySearchStr(" Category%s" % cat.capitalize())
+
+    def getPagesByCategories(self, cats):
+        """Passed a list of categories and returns all pages containing ALL those category links."""
+        pages = self.pageNames
+        for c in cats:
+            pages = self.getPagesSetIntersection(pages,self.getPagesByCategory(c))
+        return pages
+    
+    def getPagesByCatOrTag(self, val):
+        """Returns all pages with either tag or category = val"""
+        return self.getPagesSetUnion(self.getPagesByTag(val),self.getPagesByCategory(val))
+    
