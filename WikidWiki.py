@@ -2,6 +2,13 @@ import os,glob
 import mmap
 
 from WikidWorker import hasWiki
+"""
+WikidWiki Class
+WikidPad Extensions and Helper library for WikidPad. Incorporates the older projects:WikidSets, WikidTags, etc.
+Version 1.0
+Remote: https://github.com/jaysen/WikidLibPy.git
+
+"""
 
 class WikidWiki(object):
     """class for working with a wikidpad wiki from the filesystem."""
@@ -32,6 +39,8 @@ class WikidWiki(object):
     def __getFilePathFromPageName(self,pageName):
         filename = os.path.join(self.datafolder,"%s.wiki" % pageName)
         return filename    
+    
+    """ GET_PAGES Methods:"""
     
     def getAllPages(self):
         """Returns a list of Pages found in data folder."""
