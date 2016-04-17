@@ -1,5 +1,10 @@
+"""
+WikidWorker Module. 
+Part of WikidLibPy - WikidPad Extensions and Helper library for WikidPad. Incorporates the older projects:WikidSets, WikidTags, etc.
+Version 1.0
+Remote: https://github.com/jaysen/WikidLibPy.git
 
-# WikidWorker Module
+"""
 
 import os,glob
 
@@ -29,5 +34,6 @@ class FunctionTest(object):
         print str(func) + 'PASSED ALL TESTS'
                      
 #run tests
-t = FunctionTest()
-t.test(hasWiki)
+def runTests:
+    t = FunctionTest()
+    t.test(hasWiki)
