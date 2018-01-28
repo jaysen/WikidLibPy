@@ -6,7 +6,7 @@ Remote: https://github.com/jaysen/WikidLibPy.git
 
 """
 
-import os,glob
+import os, glob
 
 def hasTopWikiFile(folder_path):
     return len(glob.glob(folder_path+'/*.wiki')) > 0
@@ -30,10 +30,15 @@ class FunctionTest(object):
         assert_equal(func('TestWiki'),True)
         assert_equal(func('NoTestWiki'),False)
         assert_equal(func('BadTestWiki'),False)      
-        
-        print str(func) + 'PASSED ALL TESTS'
-                     
+        print(f'{str(func)} PASSED ALL TESTS')
+
 #run tests
-def runTests:
+def runTests():
     t = FunctionTest()
     t.test(hasWiki)
+
+def main():
+    runTests()
+
+if __name__ == '__main__':
+    main()
