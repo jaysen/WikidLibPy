@@ -1,4 +1,4 @@
-import os,glob
+import os, glob
 import mmap
 
 from WikidWorker import hasWiki
